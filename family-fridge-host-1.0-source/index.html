@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0"
+    />
+    <meta name="theme-color" content="#F4F1EA" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Fridge" />
+    <meta name="description" content="The family fridge door, made digital." />
+    <title>Family Fridge</title>
+
+    <!-- Overridden at runtime in lib/pwa.ts with a manifest whose start_url
+         is the actual /w/<uuid>, not the bare origin. This static file is
+         only a fallback for the brief moment before that script runs. -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+
+    <!-- Inter is bundled, not fetched: see the @fontsource imports in
+         src/main.tsx. Helvetica Neue (spec §5) is still the fallback. -->
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

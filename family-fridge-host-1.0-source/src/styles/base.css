@@ -1,0 +1,203 @@
+/* ============================================================
+   Family Fridge: reset, global typography, grid.
+   Spec §5 typography, §6 layout system.
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--t-body);
+  font-weight: var(--w-regular);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-synthesis-weight: none;
+
+  /* Nothing on a fridge door bounces. */
+  overscroll-behavior-y: none;
+}
+
+/* No blue flash on tap: this is a physical surface, not a web page. */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+}
+
+button {
+  cursor: pointer;
+  text-align: left;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------- Type roles (§5) --------------------------------
+   Size, spacing and weight do the work. Two weights only. */
+
+.t-display {
+  font-size: var(--t-display);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--track-display);
+  font-weight: var(--w-regular);
+  text-wrap: balance;
+}
+
+.t-page {
+  font-size: var(--t-page);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.02em;
+  font-weight: var(--w-regular);
+}
+
+.t-section {
+  font-size: var(--t-section);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  font-weight: var(--w-regular);
+}
+
+.t-body {
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+}
+
+.t-small {
+  font-size: var(--t-small);
+  line-height: 1.4;
+}
+
+/* The editorial eyebrow: GROCERIES, TODAY'S MOMENT, OUR FAMILY. */
+.t-label {
+  font-size: var(--t-small);
+  font-weight: var(--w-medium);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.t-numeral {
+  font-size: var(--t-numeral);
+  line-height: 0.86;
+  letter-spacing: -0.05em;
+  font-weight: var(--w-regular);
+  font-variant-numeric: tabular-nums;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* ---------- Layout (§6) ------------------------------------
+   4 columns on phone, 12 on the fridge. One canvas either way. */
+
+.wall {
+  --cols: 4;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  gap: var(--s-4);
+  width: 100%;
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@media (min-width: 768px) {
+  .wall {
+    --cols: 12;
+    gap: var(--s-5);
+  }
+}
+
+/* Every zone spans the full grid; the modules inside them subdivide.
+   Large blocks, not many tiny widgets (§6). */
+.zone {
+  grid-column: 1 / -1;
+}
+
+/* Screen-reader-only, for the labels the layout implies visually. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Shared surfaces (§6) ---------------------------
+   Two treatments, deliberately alternated down the wall: soft
+   rounded cards against thin-bordered rectangular modules. */
+
+.card {
+  border-radius: var(--r-card);
+  padding: var(--pad-card);
+}
+
+.module {
+  border-top: var(--hairline);
+  padding-top: var(--s-4);
+}
+
+/* A hairline rule tinted by what it classifies. */
+.rule {
+  height: 1px;
+  border: 0;
+  background: var(--ink-12);
+}
+
+/* ---------- Motion (§15) ----------------------------------- */
+
+@keyframes settle-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.settle-in {
+  animation: settle-in var(--d-base) var(--ease) both;
+}

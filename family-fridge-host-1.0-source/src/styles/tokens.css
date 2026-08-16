@@ -1,0 +1,124 @@
+/* ============================================================
+   Family Fridge: design tokens
+   Spec §4 colour, §5 typography, §6 layout, §15 motion.
+   Everything visual in this app resolves to a value in here.
+   ============================================================ */
+
+:root {
+  /* --- Foundation (§4) ------------------------------------ */
+  --paper: #f4f1ea;
+  --ink: #111111;
+  --muted: #6f6b64;
+
+  /* Paper, shaded. Used sparingly, thin rules and pressed states. */
+  --ink-08: rgba(17, 17, 17, 0.08);
+  --ink-12: rgba(17, 17, 17, 0.12);
+  --ink-16: rgba(17, 17, 17, 0.16);
+  --ink-04: rgba(17, 17, 17, 0.04);
+
+  /* --- Accents (§4) --------------------------------------- */
+  --coral: #ea625d;
+  --butter: #f4d98a;
+  --sky: #9ddce5;
+  --green: #b8d8b0;
+
+  /* Classification map. Colour carries meaning, never decoration. */
+  --c-task: var(--coral);
+  --c-grocery: var(--butter);
+  --c-memory: var(--sky);
+  --c-family: var(--green);
+
+  /* Tinted washes for the few filled surfaces we allow. */
+  --coral-wash: #f7dedd;
+  --butter-wash: #fbf1d6;
+  --sky-wash: #e4f4f7;
+  --green-wash: #eaf3e7;
+
+  /* --- Type (§5) ------------------------------------------
+     Inter first; Helvetica Neue is an approved fallback and is
+     local on macOS, so the design survives with no network. */
+  --font: 'Inter', 'Helvetica Neue', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Arial, sans-serif;
+
+  /* Fluid on the spec's scale. Phone first, these are sized
+     for a 375–430px canvas and open up on larger surfaces. */
+  --t-display: clamp(2.5rem, 11vw, 4rem); /* 40 → 64 */
+  --t-page: clamp(2rem, 7.5vw, 2.5rem); /* 32 → 40 */
+  --t-section: clamp(1.125rem, 4vw, 1.375rem); /* 18 → 22 */
+  --t-body: clamp(1rem, 3.6vw, 1.125rem); /* 16 → 18 */
+  --t-small: clamp(0.75rem, 2.8vw, 0.875rem); /* 12 → 14 */
+
+  /* The oversized numeral in the Today block: spec §5's "3 things". */
+  --t-numeral: clamp(4rem, 24vw, 7rem);
+
+  --lh-tight: 1.02;
+  --lh-snug: 1.14;
+  --lh-body: 1.55;
+
+  /* Two weights only. Contrast comes from size and space (§5). */
+  --w-regular: 400;
+  --w-medium: 500;
+
+  /* Editorial eyebrow/label treatment. */
+  --track-label: 0.14em;
+  --track-display: -0.03em;
+
+  /* --- Space ---------------------------------------------- */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-7: 32px;
+  --s-8: 40px;
+  --s-9: 56px;
+  --s-10: 72px;
+
+  /* Whitespace between zones on the wall. Used aggressively (§28). */
+  --zone-gap: var(--s-10);
+  --gutter: var(--s-5);
+
+  /* --- Cards (§6) ----------------------------------------- */
+  --r-card: 20px;
+  --r-large: 24px;
+  --r-small: 16px;
+  --r-pill: 999px;
+  --pad-card: 24px;
+  --hairline: 1px solid var(--ink-12);
+
+  /* --- Motion (§15) ---------------------------------------
+     Short, calm, ease-out. No springs anywhere in this file. */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --d-fast: 180ms;
+  --d-base: 220ms;
+  --d-slow: 240ms;
+  --d-photo: 600ms; /* the one exception: moment crossfade */
+
+  /* --- Touch (§16) ---------------------------------------- */
+  --touch: 48px;
+  --touch-fridge: 64px;
+}
+
+/* Fridge / tablet: the shared surface. Read from 1–2 metres:
+   bigger type, bigger targets, more air (§16). */
+@media (min-width: 768px) {
+  :root {
+    --t-display: clamp(3.5rem, 6.5vw, 5rem);
+    --t-body: 1.125rem;
+    --t-numeral: clamp(6rem, 11vw, 9rem);
+    --gutter: var(--s-8);
+    --zone-gap: 96px;
+    --pad-card: 28px;
+    --touch: var(--touch-fridge);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --d-fast: 1ms;
+    --d-base: 1ms;
+    --d-slow: 1ms;
+    --d-photo: 1ms;
+  }
+}

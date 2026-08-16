@@ -1,0 +1,1561 @@
+/* ============================================================
+   Family Fridge: the wall and everything pinned to it.
+   Phone first. The fridge/tablet scale-up lives at the bottom.
+   ============================================================ */
+
+.wall {
+  padding-block: var(--s-7) 148px; /* room for the rail */
+  row-gap: var(--zone-gap);
+}
+
+/* The wall waking up: each zone settles in a beat after the last, once, on
+   first load. Short and quick per zone so it reads as one gesture rather
+   than a slow reveal you sit and wait through. */
+.wall > .zone {
+  animation: settle-in 420ms var(--ease) both;
+}
+.wall > .zone:nth-child(1) {
+  animation-delay: 0ms;
+}
+.wall > .zone:nth-child(2) {
+  animation-delay: 60ms;
+}
+.wall > .zone:nth-child(3) {
+  animation-delay: 120ms;
+}
+.wall > .zone:nth-child(4) {
+  animation-delay: 180ms;
+}
+.wall > .zone:nth-child(5) {
+  animation-delay: 240ms;
+}
+.wall > .zone:nth-child(6) {
+  animation-delay: 300ms;
+}
+.wall > .zone:nth-child(7) {
+  animation-delay: 360ms;
+}
+
+/* Colour classification marker. This little rule is how a zone announces
+   what kind of thing it holds, instead of the zone being painted (§4). */
+.tick {
+  display: inline-block;
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  margin-right: var(--s-2);
+  vertical-align: 0.22em;
+  background: var(--ink);
+}
+.tick--task {
+  background: var(--c-task);
+}
+.tick--grocery {
+  background: var(--c-grocery);
+}
+.tick--memory {
+  background: var(--c-memory);
+}
+.tick--family {
+  background: var(--c-family);
+}
+.tick--note {
+  background: var(--ink);
+}
+
+/* The family lens quiets, never hides. Everyone still sees one wall. */
+.is-dimmed {
+  opacity: 0.28;
+  transition: opacity var(--d-base) var(--ease);
+}
+
+.empty {
+  padding-block: var(--s-5);
+}
+
+/* ---------- Masthead --------------------------------------- */
+
+.masthead__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  margin-bottom: var(--s-6);
+}
+
+.masthead__id {
+  min-width: 0;
+}
+
+.masthead__household {
+  font-weight: var(--w-medium);
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.masthead__greeting {
+  max-width: 20ch;
+}
+
+.whoami {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  max-width: 55vw;
+  padding: 5px 12px 5px 5px;
+  border: var(--hairline);
+  border-radius: var(--r-pill);
+  transition:
+    background var(--d-fast) var(--ease),
+    transform var(--d-fast) var(--ease);
+}
+/* Onboarding allows full names, not just the seed data's short first names,
+   this keeps the pill one line regardless of how long a name runs. */
+.whoami span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.whoami:active {
+  background: var(--ink-04);
+}
+
+/* ---------- Avatars ---------------------------------------- */
+
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--r-pill);
+  background: var(--ink-04);
+  color: var(--ink);
+  font-weight: var(--w-medium);
+  line-height: 1;
+  flex: none;
+}
+.avatar--ring {
+  box-shadow: inset 0 0 0 2px var(--identity);
+}
+.avatar--sm {
+  width: 26px;
+  height: 26px;
+  font-size: 11px;
+}
+.avatar--md {
+  width: 34px;
+  height: 34px;
+  font-size: 13px;
+}
+.avatar--lg {
+  width: 46px;
+  height: 46px;
+  font-size: 16px;
+}
+
+.dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--r-pill);
+  background: var(--identity);
+  margin-right: 6px;
+  vertical-align: 0.05em;
+  flex: none;
+}
+
+/* ---------- Check ------------------------------------------ */
+
+.check {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--touch);
+  height: var(--touch);
+  margin-left: -12px; /* optical: the ring aligns to the text column */
+}
+
+.check__box {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1.5px solid var(--ink-16);
+  border-radius: var(--r-pill);
+  transition:
+    background var(--d-fast) var(--ease),
+    border-color var(--d-fast) var(--ease),
+    transform var(--d-fast) var(--ease);
+}
+
+/* A quick ring that expands and fades out. The one moment this product
+   allows itself to feel a little celebratory (§11: completing a task
+   should feel satisfying) while staying inside the no-bounce motion budget. */
+.check__ripple {
+  position: absolute;
+  inset: -6px;
+  border-radius: var(--r-pill);
+  border: 1.5px solid transparent;
+  pointer-events: none;
+  opacity: 0;
+}
+.check--coral .check__ripple {
+  border-color: var(--c-task);
+}
+.check--butter .check__ripple {
+  border-color: var(--c-grocery);
+}
+.check.is-checked .check__ripple {
+  animation: check-ripple 500ms var(--ease) both;
+}
+
+@keyframes check-ripple {
+  from {
+    opacity: 0.55;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .check.is-checked .check__ripple {
+    animation: none;
+  }
+}
+
+.check__tick {
+  opacity: 0;
+  transform: scale(0.7);
+  transition:
+    opacity var(--d-fast) var(--ease),
+    transform var(--d-fast) var(--ease);
+}
+
+.check:active .check__box {
+  transform: scale(0.9);
+}
+
+.check.is-checked .check__box {
+  border-color: transparent;
+}
+.check--coral.is-checked .check__box {
+  background: var(--c-task);
+}
+.check--butter.is-checked .check__box {
+  background: var(--c-grocery);
+}
+.check.is-checked .check__tick {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Today ------------------------------------------ */
+
+.today__grid {
+  display: grid;
+  gap: var(--s-6);
+}
+
+/* The one fully filled colour block on the wall. Everything else is
+   ink on paper, which is what makes this read as intentional (§4). */
+.count {
+  position: relative;
+  background: var(--c-task);
+  border-radius: var(--r-large);
+  padding: var(--pad-card);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--s-6);
+  min-height: 184px;
+  overflow: hidden;
+}
+
+/* A very slow, faint highlight breathing across the one big colour block on
+   the wall, so it reads as a living display rather than a printed card. */
+.count::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(circle at 30% 20%, var(--paper) 0%, transparent 55%);
+  opacity: 0.14;
+  animation: count-glow 9s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes count-glow {
+  0%,
+  100% {
+    opacity: 0.08;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.18;
+    transform: scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .count::before {
+    animation: none;
+  }
+}
+
+.count__eyebrow {
+  position: relative;
+  opacity: 0.6;
+}
+
+.count__body {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-4);
+}
+
+.count__n {
+  font-variant-numeric: tabular-nums;
+  animation: count-change var(--d-slow) var(--ease) both;
+}
+
+@keyframes count-change {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.count__label {
+  text-align: right;
+  line-height: 1.15;
+  padding-bottom: 0.4em;
+}
+
+.today__eyebrow {
+  margin-bottom: var(--s-3);
+}
+
+.task {
+  border-top: var(--hairline);
+}
+.task:last-child {
+  border-bottom: var(--hairline);
+}
+
+.task__main {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--touch);
+  padding-block: var(--s-2);
+}
+
+.task__text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.task__title {
+  transition:
+    opacity var(--d-base) var(--ease),
+    text-decoration-color var(--d-base) var(--ease);
+}
+
+.task__note {
+  margin-top: 2px;
+}
+
+.task__overdue {
+  color: var(--c-task);
+  font-weight: var(--w-medium);
+}
+
+.task__who {
+  flex: none;
+  display: grid;
+  place-items: center;
+  min-width: var(--touch);
+  height: var(--touch);
+}
+
+.task__unassigned {
+  color: var(--muted);
+  border-bottom: 1px dashed var(--ink-16);
+}
+
+/* Spec §11: a short, calm confirmation, then it's gone. */
+.task.is-leaving {
+  animation: task-leave var(--d-slow) var(--ease) 200ms both;
+}
+.task.is-leaving .task__title {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
+@keyframes task-leave {
+  to {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+}
+
+.assign {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  padding: 0 0 var(--s-4) 36px;
+}
+
+.assign__opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 6px 6px;
+  border: var(--hairline);
+  border-radius: var(--r-pill);
+  transition: background var(--d-fast) var(--ease);
+}
+.assign__opt.is-on {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.assign__clear {
+  padding-left: 10px;
+  color: var(--muted);
+}
+
+.lens-empty {
+  padding-block: var(--s-4);
+}
+
+.later {
+  margin-top: var(--s-5);
+}
+.later summary {
+  cursor: pointer;
+  padding-block: var(--s-2);
+  list-style: none;
+}
+.later summary::-webkit-details-marker {
+  display: none;
+}
+.later summary::before {
+  content: '+ ';
+}
+.later[open] summary::before {
+  content: '– ';
+}
+
+/* ---------- Groceries --------------------------------------
+   A thin-bordered rectangle, set against the rounded cards
+   above and below it. That contrast is the point (§6). */
+
+.shop__head,
+.moment__head,
+.family__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-4);
+  margin-bottom: var(--s-4);
+}
+
+.shop__module {
+  border: var(--hairline);
+  border-radius: var(--r-small);
+  padding: var(--s-2) var(--s-5) var(--s-2);
+}
+
+.shop__cat + .shop__cat {
+  margin-top: var(--s-5);
+}
+
+.shop__cat-label {
+  color: var(--muted);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  font-weight: var(--w-medium);
+  padding-block: var(--s-3) var(--s-1);
+}
+
+.grocery {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--touch);
+  border-top: 1px solid var(--ink-08);
+}
+.shop__cat ul li:first-child {
+  border-top: 0;
+}
+
+.grocery__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  transition:
+    opacity var(--d-base) var(--ease),
+    text-decoration-color var(--d-base) var(--ease);
+}
+
+.grocery__qty {
+  flex: none;
+  padding: 2px 8px;
+  border: var(--hairline);
+  border-radius: var(--r-pill);
+}
+
+/* Groceries don't vanish when checked. You need to see what's already in
+   the basket while you're standing in the shop (§12 shopping trip state). */
+.grocery.is-done .grocery__name {
+  opacity: 0.42;
+  text-decoration: line-through;
+}
+
+.shop__add-btn,
+.shop__add {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  width: 100%;
+  min-height: var(--touch);
+  margin-top: var(--s-3);
+  border-top: 1px solid var(--ink-08);
+  color: var(--muted);
+}
+
+.shop__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--ink);
+  padding-block: var(--s-2);
+}
+.shop__input:focus {
+  outline: none;
+}
+
+.shop__clear {
+  margin-top: var(--s-4);
+  padding: 10px 16px;
+  border: var(--hairline);
+  border-radius: var(--r-pill);
+  color: var(--muted);
+}
+
+/* ---------- Notes -------------------------------------------
+   No accent colour by design: the palette classifies the four
+   content types, and a note is simply paper. */
+
+.notes__head {
+  margin-bottom: var(--s-4);
+}
+
+.notes__list {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.note {
+  background: var(--ink-04);
+  border-radius: var(--r-card);
+  padding: var(--pad-card);
+}
+
+.note__body {
+  text-wrap: pretty;
+}
+
+.note__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  margin-top: var(--s-4);
+}
+
+.note__remove {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin: -8px -8px -8px 0;
+  border-radius: var(--r-pill);
+  color: var(--muted);
+}
+.note__remove:active {
+  background: var(--ink-08);
+}
+
+/* ---------- Moment ------------------------------------------
+   Large, strongly cropped, almost no controls (§14). */
+
+.moment__track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  border-radius: var(--r-large);
+  background: var(--ink-04);
+}
+.moment__track::-webkit-scrollbar {
+  display: none;
+}
+
+.moment__slide {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  aspect-ratio: 4 / 5;
+}
+
+.art {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Ambient life in the placeholder art. Slow and small on purpose: the spec
+   asks for calm, not "constant movement" (§15). This should read as a
+   living scene glimpsed for a moment, not something visibly animating. */
+@keyframes art-drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(5px, -7px);
+  }
+}
+@keyframes art-breathe {
+  0%,
+  100% {
+    opacity: 0.68;
+  }
+  50% {
+    opacity: 0.84;
+  }
+}
+@keyframes art-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes art-sway {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.art__sun {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation:
+    art-drift 16s ease-in-out infinite,
+    art-breathe 10s ease-in-out infinite;
+}
+.art__horizon {
+  animation: art-breathe 12s ease-in-out infinite;
+}
+.art__figure {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: art-bob 8s ease-in-out infinite;
+}
+.art__form {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: art-sway 11s ease-in-out infinite;
+}
+.art__form--2 {
+  animation-delay: -3s;
+}
+.art__form--3 {
+  animation-delay: -6.5s;
+}
+.art__form--4 {
+  animation-delay: -1.5s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .art__sun,
+  .art__horizon,
+  .art__figure,
+  .art__form {
+    animation: none;
+  }
+}
+
+.moment__caption {
+  padding-top: var(--s-5);
+  animation: caption-fade var(--d-photo) var(--ease) both;
+}
+
+@keyframes caption-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.moment__quote {
+  margin-top: var(--s-3);
+  text-wrap: balance;
+}
+
+.moment__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--s-5);
+  padding-top: var(--s-4);
+  border-top: var(--hairline);
+}
+
+.moment__remove {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin: -8px;
+  border-radius: var(--r-pill);
+  color: var(--muted);
+}
+
+/* ---------- Family ------------------------------------------ */
+
+.family__list {
+  border-top: var(--hairline);
+}
+
+.family__head-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+}
+
+.family__invite-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  padding: 6px 4px;
+}
+.family__invite-btn[aria-pressed='true'] {
+  color: var(--ink);
+}
+
+.invite-panel {
+  margin-bottom: var(--s-5);
+  padding: var(--pad-card);
+  border-radius: var(--r-card);
+  background: var(--ink-04);
+}
+.invite-panel__link {
+  margin-top: var(--s-3);
+  padding: var(--s-3);
+  border-radius: var(--r-small);
+  background: var(--paper);
+  word-break: break-all;
+  font-variant-numeric: tabular-nums;
+}
+.invite-panel__copy {
+  margin-top: var(--s-4);
+  width: 100%;
+  justify-content: center;
+}
+
+.member {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-bottom: var(--hairline);
+  transition: opacity var(--d-base) var(--ease);
+}
+
+.member__row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding-right: 40px; /* room for the edit button pinned top-right */
+}
+
+.member__lens {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  min-width: 0;
+  min-height: 76px;
+  transition: transform var(--d-fast) var(--ease);
+}
+
+.member__text {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+/* No dividing rule: one member without a number shouldn't leave a
+   hole in a column that reads like a table. */
+.member__phone {
+  flex: none;
+  color: var(--muted);
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+  padding: 14px 0;
+}
+.member__phone:active {
+  color: var(--ink);
+}
+
+.member__edit {
+  position: absolute;
+  top: var(--s-3);
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-pill);
+  color: var(--muted);
+  transition:
+    background var(--d-fast) var(--ease),
+    color var(--d-fast) var(--ease),
+    transform var(--d-fast) var(--ease);
+}
+.member__edit:active {
+  background: var(--ink-08);
+}
+.member__edit[aria-pressed='true'] {
+  color: var(--ink);
+  background: var(--ink-08);
+}
+
+.member.is-on .member__name {
+  font-weight: var(--w-medium);
+}
+.member.is-on {
+  box-shadow: inset 3px 0 0 var(--c-family);
+  padding-left: var(--s-3);
+  margin-left: calc(var(--s-3) * -1);
+}
+
+.family__clear {
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- Editing a person ---------------------------------- */
+
+.person-form {
+  display: grid;
+  gap: var(--s-4);
+  padding: var(--s-2) 0 var(--s-6);
+}
+
+.person-form__row {
+  display: flex;
+  gap: var(--s-3);
+}
+
+.person-form__field {
+  flex: 1 1 0;
+  min-width: 0;
+  padding-bottom: var(--s-2);
+  border-bottom: var(--hairline);
+}
+.person-form__field:focus {
+  outline: none;
+  border-bottom-color: var(--ink);
+}
+.person-form__field::placeholder {
+  color: var(--ink-16);
+}
+
+.person-form__accents {
+  gap: var(--s-3);
+}
+
+.person-form__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+.person-form__remove {
+  color: var(--muted);
+  padding-left: 4px;
+}
+
+.person-form__save {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+/* ---------- Add a person ---------------------------------------- */
+
+.family__add-btn,
+.family__add {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  width: 100%;
+  min-height: var(--touch);
+  margin-top: var(--s-2);
+  border-top: 1px solid var(--ink-08);
+  color: var(--muted);
+}
+
+.family__add-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--ink);
+  padding-block: var(--s-2);
+}
+.family__add-input:focus {
+  outline: none;
+}
+
+/* ---------- Colophon ---------------------------------------- */
+
+.colophon {
+  display: grid;
+  gap: var(--s-3);
+  justify-items: start;
+}
+.colophon .rule {
+  width: 100%;
+  margin-bottom: var(--s-3);
+}
+.colophon__reset {
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- The lens banner --------------------------------- */
+
+.lens-bar {
+  position: fixed;
+  left: 50%;
+  bottom: calc(104px + env(safe-area-inset-bottom, 0px));
+  z-index: 40;
+  padding: 10px 18px;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--paper);
+  font-size: var(--t-small);
+  white-space: nowrap;
+  max-width: calc(100vw - 32px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Its own keyframe: the shared .settle-in would animate transform to
+     `none` and knock this out of its centred position. */
+  animation: lens-in var(--d-base) var(--ease) both;
+}
+
+@keyframes lens-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 6px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* ---------- Zone rail ---------------------------------------
+   Persistent, quiet, easy to hit, but it scrolls the one canvas
+   rather than routing anywhere (§9). */
+
+.rail {
+  position: fixed;
+  z-index: 50;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(var(--s-4) + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 6px;
+  border: var(--hairline);
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  max-width: calc(100vw - 24px);
+}
+
+.rail__list {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.rail__chip {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 46px;
+  padding-inline: 13px;
+  border-radius: var(--r-pill);
+  color: var(--muted);
+  transition:
+    background var(--d-base) var(--ease),
+    color var(--d-base) var(--ease),
+    padding var(--d-base) var(--ease),
+    transform var(--d-fast) var(--ease);
+}
+
+.rail__label {
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  transition:
+    max-width var(--d-base) var(--ease),
+    opacity var(--d-base) var(--ease),
+    margin var(--d-base) var(--ease);
+}
+
+.rail__chip.is-active {
+  background: var(--ink);
+  color: var(--paper);
+  padding-inline: 14px 16px;
+}
+.rail__chip.is-active .rail__label {
+  max-width: 90px;
+  opacity: 1;
+  margin-left: 7px;
+}
+
+.rail__add {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex: none;
+  border-radius: var(--r-pill);
+  background: var(--c-task);
+  color: var(--ink);
+  transition: transform var(--d-fast) var(--ease);
+}
+.rail__add:active {
+  transform: scale(0.93);
+}
+
+/* ---------- Quick Add sheet --------------------------------- */
+
+.sheet-root {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.sheet__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(17, 17, 17, 0.28);
+  animation: scrim-in var(--d-base) var(--ease) both;
+}
+
+@keyframes scrim-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.sheet {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  background: var(--paper);
+  border-top-left-radius: var(--r-large);
+  border-top-right-radius: var(--r-large);
+  padding: var(--s-3) var(--gutter) calc(var(--s-6) + env(safe-area-inset-bottom, 0px));
+  animation: sheet-up var(--d-slow) var(--ease) both;
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.sheet__grab {
+  width: 38px;
+  height: 4px;
+  border-radius: var(--r-pill);
+  background: var(--ink-16);
+  margin: 0 auto var(--s-5);
+}
+
+.sheet__input {
+  width: 100%;
+  padding-block: var(--s-2);
+  resize: none;
+  overflow: hidden;
+  line-height: var(--lh-snug);
+  max-height: 40dvh;
+}
+.sheet__input:focus {
+  outline: none;
+}
+.sheet__input::placeholder {
+  color: var(--ink-16);
+}
+
+.sheet__hint {
+  margin-bottom: var(--s-4);
+  text-wrap: pretty;
+}
+
+.sheet__extra {
+  display: grid;
+  gap: var(--s-2);
+  margin-top: var(--s-5);
+}
+.sheet__extra .t-label {
+  margin-top: var(--s-2);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 8px 15px;
+  border: var(--hairline);
+  border-radius: var(--r-pill);
+  font-size: var(--t-small);
+  transition:
+    background var(--d-fast) var(--ease),
+    border-color var(--d-fast) var(--ease),
+    color var(--d-fast) var(--ease),
+    transform var(--d-fast) var(--ease);
+}
+.chip--person {
+  padding-left: 6px;
+}
+
+.chip.is-on {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+/* The type chips carry their classifying colour when chosen (§4). */
+.chip--coral.is-on {
+  background: var(--c-task);
+  border-color: var(--c-task);
+  color: var(--ink);
+}
+.chip--butter.is-on {
+  background: var(--c-grocery);
+  border-color: var(--c-grocery);
+  color: var(--ink);
+}
+.chip--sky.is-on {
+  background: var(--c-memory);
+  border-color: var(--c-memory);
+  color: var(--ink);
+}
+
+.swatch {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--r-pill);
+  border: 2px solid transparent;
+  box-shadow: inset 0 0 0 1px var(--ink-12);
+  transition: transform var(--d-fast) var(--ease);
+}
+.swatch.is-on {
+  border-color: var(--ink);
+}
+
+.sheet__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin-top: var(--s-7);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--touch);
+  padding: 12px 22px;
+  border-radius: var(--r-pill);
+  transition:
+    background var(--d-fast) var(--ease),
+    opacity var(--d-fast) var(--ease),
+    transform var(--d-fast) var(--ease);
+}
+
+/* One shared tactile press across every tappable control on the wall, so
+   the fridge feels consistently responsive under a finger. */
+.chip:active,
+.btn:not(:disabled):active,
+.rail__chip:active,
+.onboard__who-opt:active,
+.whoami:active,
+.member__lens:active,
+.swatch:active {
+  transform: scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chip:active,
+  .btn:not(:disabled):active,
+  .rail__chip:active,
+  .onboard__who-opt:active,
+  .whoami:active,
+  .member__lens:active,
+  .swatch:active {
+    transform: none;
+  }
+}
+
+.btn--quiet {
+  color: var(--muted);
+  padding-left: 4px;
+}
+
+.btn--go {
+  background: var(--ink);
+  color: var(--paper);
+}
+.btn--go:disabled {
+  opacity: 0.32;
+  cursor: not-allowed;
+}
+.btn--go:not(:disabled):active {
+  background: #000;
+}
+
+/* ---------- Opening / onboarding ------------------------------ */
+
+.opening {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+}
+
+.onboard {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  padding: var(--s-7) var(--gutter);
+}
+
+.onboard__step {
+  width: 100%;
+  max-width: 480px;
+  margin-inline: auto;
+}
+
+.onboard__count {
+  margin-bottom: var(--s-5);
+}
+
+.onboard__hint {
+  margin-top: var(--s-4);
+  max-width: 42ch;
+}
+
+.onboard__input {
+  width: 100%;
+  margin-top: var(--s-7);
+  padding-bottom: var(--s-3);
+  border-bottom: 1.5px solid var(--ink-16);
+}
+.onboard__input:focus {
+  outline: none;
+  border-bottom-color: var(--ink);
+}
+.onboard__input::placeholder {
+  color: var(--ink-16);
+}
+
+.onboard__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin-top: var(--s-8);
+}
+
+.onboard__people {
+  display: grid;
+  gap: var(--s-2);
+  margin-top: var(--s-6);
+}
+
+.onboard__person {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: var(--touch);
+  border-bottom: 1px solid var(--ink-08);
+}
+
+.onboard__person-name {
+  flex: 1 1 auto;
+}
+
+.onboard__person-remove {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-right: -8px;
+  border-radius: var(--r-pill);
+  color: var(--muted);
+}
+.onboard__person-remove:active {
+  background: var(--ink-08);
+}
+
+.onboard__add {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin-top: var(--s-6);
+  border-bottom: 1.5px solid var(--ink-16);
+}
+
+.onboard__input--inline {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-bottom: var(--s-3);
+}
+.onboard__input--inline:focus {
+  outline: none;
+}
+
+.onboard__who {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--s-3);
+  margin-top: var(--s-7);
+}
+
+.onboard__who-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-5) var(--s-3);
+  border: var(--hairline);
+  border-radius: var(--r-card);
+  text-align: center;
+  transition:
+    border-color var(--d-fast) var(--ease),
+    transform var(--d-fast) var(--ease);
+}
+.onboard__who-opt.is-on {
+  border-color: var(--ink);
+  border-width: 1.5px;
+}
+
+.onboard__link {
+  margin-top: var(--s-7);
+  padding: var(--pad-card);
+  border-radius: var(--r-card);
+  background: var(--ink-04);
+}
+
+.onboard__link-text {
+  word-break: break-all;
+  font-variant-numeric: tabular-nums;
+}
+
+.onboard__copy {
+  margin-top: var(--s-5);
+  width: 100%;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .onboard__who {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ============================================================
+   Fridge / tablet. Same wall, same zones, more air and bigger
+   targets, designed to be read from 1–2 metres (§16).
+   ============================================================ */
+
+@media (min-width: 768px) {
+  .wall {
+    padding-block: var(--s-9) 168px;
+  }
+
+  .masthead {
+    grid-column: 1 / -1;
+  }
+  .masthead__greeting {
+    max-width: 16ch;
+  }
+
+  /* The count block and today's list sit side by side. */
+  .today__grid {
+    grid-template-columns: 4fr 8fr;
+    gap: var(--s-8);
+    align-items: start;
+  }
+  .count {
+    min-height: 300px;
+  }
+  .count__body {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s-3);
+  }
+  .count__label {
+    text-align: left;
+    padding-bottom: 0;
+  }
+
+  /* Groceries and the notice board share a row. */
+  .shop {
+    grid-column: 1 / 8;
+  }
+  .notes {
+    grid-column: 8 / -1;
+  }
+
+  .moment {
+    display: grid;
+    grid-template-columns: 7fr 5fr;
+    gap: var(--s-8);
+    align-items: center;
+  }
+  .moment__head {
+    grid-column: 1 / -1;
+  }
+  .moment__slide {
+    aspect-ratio: 5 / 4;
+  }
+  .moment__caption {
+    padding-top: 0;
+  }
+  .moment__quote {
+    font-size: var(--t-display);
+    line-height: var(--lh-snug);
+  }
+
+  /* Four people, four columns. */
+  .family__list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0 var(--s-5);
+  }
+  .member {
+    border-top: var(--hairline);
+    border-bottom: 0;
+    padding-top: var(--s-4);
+  }
+  .member__row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding-right: 0;
+  }
+  .member__lens {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s-3);
+    width: 100%;
+    min-height: 128px;
+  }
+  .member__phone {
+    border-left: 0;
+    padding: 0 0 var(--s-4);
+    align-self: flex-start;
+  }
+  .member.is-on {
+    box-shadow: inset 0 3px 0 var(--c-family);
+    padding-left: 0;
+    margin-left: 0;
+  }
+
+  .rail {
+    bottom: calc(var(--s-6) + env(safe-area-inset-bottom, 0px));
+    padding: 8px;
+    gap: var(--s-3);
+  }
+  .rail__chip {
+    height: var(--touch-fridge);
+    padding-inline: 20px;
+  }
+  .rail__label {
+    /* At fridge distance every label stays legible, always. */
+    max-width: 120px;
+    opacity: 1;
+    margin-left: 9px;
+  }
+  .rail__add {
+    width: var(--touch-fridge);
+    height: var(--touch-fridge);
+  }
+
+  .lens-bar {
+    bottom: calc(132px + env(safe-area-inset-bottom, 0px));
+    font-size: var(--t-body);
+    padding: 12px 22px;
+  }
+
+  .sheet {
+    border-radius: var(--r-large);
+    margin-bottom: var(--s-8);
+    padding: var(--s-5) var(--s-7) var(--s-7);
+  }
+  .sheet-root {
+    align-items: center;
+  }
+}
